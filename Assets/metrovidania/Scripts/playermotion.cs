@@ -11,7 +11,7 @@ public class playermotion : MonoBehaviour
     [SerializeField] private float jumpForce = 45;
     [SerializeField] private Transform groundCheckPoint;
     [SerializeField] private float groundCheckY = 0.2f;// dist ray travels
-    [SerializeField] private float groundCheckX = 0.2f;// using to raycast from edge also , 
+    [SerializeField] private float groundCheckX = 0.2f;// using to raycast from edge also
     [SerializeField] private LayerMask whatIsGround;
 
     void Start()
