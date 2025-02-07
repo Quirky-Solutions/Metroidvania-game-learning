@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class playermotion : MonoBehaviour
 {
-    [Header("Horizontal Movement")]
-    private Rigidbody2D rb;
+    [Header("Horizontal Movement Settings")]
     [SerializeField] private float walkSpeed;
-    private float xAxis;
 
     [Header("Ground Check Settings")]
     [SerializeField] private float jumpForce = 45;
@@ -14,9 +12,30 @@ public class playermotion : MonoBehaviour
     [SerializeField] private float groundCheckX = 0.2f;// using to raycast from edge also
     [SerializeField] private LayerMask whatIsGround;
 
+    private Rigidbody2D rb;
+    private float xAxis;
+
+    Animator anim;
+
+    public static playermotion Instance;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -24,7 +43,8 @@ public class playermotion : MonoBehaviour
         GetInputs();
         Move();
         Jump();
-    }
+        Flip();
+    } 
 
     void GetInputs()
     {
@@ -34,6 +54,7 @@ public class playermotion : MonoBehaviour
     void Move()
     {
         rb.linearVelocity = new Vector2(walkSpeed * xAxis, rb.linearVelocity.y);
+        anim.SetBool("Walking", rb.linearVelocity.x !=0 && grounded());
     }
 
     public bool grounded()
@@ -58,6 +79,20 @@ public class playermotion : MonoBehaviour
         if (Input.GetButtonDown("Jump") && grounded())
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
+        }
+        anim.SetBool("Jumping", !grounded());// syntax:: animator.SetBool("ParameterName", value);
+
+    }
+
+    void Flip()
+    {
+        if ( xAxis > 0)
+        {
+            transform.localScale = new Vector2(1*3, transform.localScale.y); 
+        }
+        else if ( xAxis < 0)
+        {
+            transform.localScale = new Vector2(-1*3, transform.localScale.y);
         }
     }
 }
